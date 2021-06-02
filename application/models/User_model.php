@@ -28,7 +28,7 @@ class User_model extends CI_Model{
 	}
 
 	public function get_user_detail($username){
-		$this->db->where("username", $username);
+		$this->db->where('username', $username);
 		$query = $this->db->get('tbl_user');
 
 		if($query->num_rows() > 0){

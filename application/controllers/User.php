@@ -2,6 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class User extends CI_Controller{
+
+	protected $username_temp;
 	
 	public function register(){
 		$this->load->library('form_validation');
@@ -42,6 +44,43 @@ class User extends CI_Controller{
 		}
 		else{
 			return TRUE;
+		}
+	}
+
+	public function login(){
+		$this->load->library('form_validation');
+		$input = $this->input->post(NULL,TRUE);
+		$this->username_temp = @input['username'];
+
+		$this->form_validation->set_rules('username', 'Username', 'requierd');
+		$this->form_validation->set_rules('password', 'Password', 'requierd|callback_password');
+
+		if($this->form_validation->run() == FALSE){
+			$this->load->view('form_login');
+		}
+		else{
+			$this->load->library('session');
+			$login_data = array(
+				'username' => $input['username'],
+				'login_status' => TRUE
+			);
+
+			$this->session->set_userdata($login_data);
+
+			redirect(base_url('front/index'));
+		}
+
+	}
+
+	public function password_check($str){
+		$this->load->model('User_model');
+		$user_detail = $this->User_model->get_user_detail($this->username_temp);
+		if($user_detail->password == crypt($str,$user_detail->password)){
+			return TRUE;
+		}
+		else{
+			$this->form_validation->set_message('passowrd_check', 'Passwordnya itu salah');
+			return FALSE;
 		}
 	}
 }
