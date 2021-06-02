@@ -7,13 +7,13 @@ class User_model extends CI_Model{
 		parent::__construct();
 	}
 	
-	public user_register($input){
+	public function user_register($input){
 		$this->load->helper('site_helper');
 		$encrypt_password = bCrypt($input['password'],12);
 		$array_user = array(
 			'user_id' => $input['username'],
 			'password' => $encrypt_password,
-			'email' => $input['email'];
+			'email' => $input['email'],
 			'active_since' => date('Y-m-d')
 		);
 
